@@ -7,6 +7,7 @@ import com.ontrek.shared.data.Login
 import com.ontrek.shared.data.MessageResponse
 import com.ontrek.shared.data.Signup
 import com.ontrek.shared.data.TokenResponse
+import com.ontrek.shared.utils.formatErrorMessage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,7 +21,12 @@ fun login(loginBody : Login, onSuccess : (TokenResponse?) -> Unit, onError: (Str
                 onSuccess(data)
             } else {
                 Log.e("Auth", "API Error: ${response.code()}, ${response.errorBody()}")
-                onError("${response.code()}")
+                onError("Login failed: ${
+                    formatErrorMessage(
+                        response.code(),
+                        response.body().toString(),
+                        mapOf(401 to "Password or Email not valid", 404 to "User not found", 400 to "Email or Password not valid"))
+                }")
             }
         }
 
@@ -29,7 +35,10 @@ fun login(loginBody : Login, onSuccess : (TokenResponse?) -> Unit, onError: (Str
             t: Throwable
         ) {
             Log.e("Auth", "API Error: ${t.toString()}")
-            onError("API Error: ${t.message ?: "Unknown error"}")
+            onError( formatErrorMessage(
+                500,
+                t.message ?: "Unknown error",
+            ))
         }
     })
 }
@@ -43,7 +52,13 @@ fun signup(signupBody : Signup, onSuccess : (MessageResponse?) -> Unit, onError:
                 onSuccess(data)
             } else {
                 Log.e("Auth", "API Error: ${response.code()}, ${response.errorBody()}")
-                onError("${response.code()}")
+                onError("Signup failed: ${
+                    formatErrorMessage(
+                        response.code(),
+                        response.body().toString(),
+                        mapOf(400 to "Email or Password are incorrect", 409 to "Username or Email already exists")
+                    )
+                }")
             }
         }
 
@@ -52,7 +67,10 @@ fun signup(signupBody : Signup, onSuccess : (MessageResponse?) -> Unit, onError:
             t: Throwable
         ) {
             Log.e("Auth", "API Error: ${t.toString()}")
-            onError("API Error: ${t.message ?: "Unknown error"}")
+            onError(formatErrorMessage(
+                500,
+                t.message ?: "Unknown error",
+            ))
         }
     })
 }

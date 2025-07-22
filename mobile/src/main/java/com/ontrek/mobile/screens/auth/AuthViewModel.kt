@@ -110,19 +110,10 @@ class AuthViewModel : ViewModel() {
                 }
             },
             onError = { error ->
-                val msg = when (error) {
-                    "401" -> "Login failed: Invalid credentials"
-                    "403" -> "Login failed: Access forbidden"
-                    "404" -> "Login failed: User not found"
-                    "500" -> "Login failed: Server error"
-                    "400" -> "Login failed: Email or password is incorrect"
-                    else -> "Login failed: $error"
-                }
-
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = msg
+                        errorMessage = error
                     )
                 }
             }
@@ -173,7 +164,7 @@ class AuthViewModel : ViewModel() {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = "Registration failed: $error"
+                        errorMessage = error
                     )
                 }
             }

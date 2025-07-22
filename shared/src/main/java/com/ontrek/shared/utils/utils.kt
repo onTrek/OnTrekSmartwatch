@@ -1,4 +1,7 @@
 package com.ontrek.shared.utils
+
+import com.ontrek.shared.data.ErrorResponse
+
 /**
  * Formatta un messaggio di errore HTTP per la visualizzazione a schermo.
  *
@@ -8,7 +11,7 @@ package com.ontrek.shared.utils
  */
 fun formatErrorMessage(
     httpCode: Int,
-    errorMessage: String? = null,
+    errorMessage: String = "",
     customMessages: Map<Int, String>? = null
 ): String {
     val errorDescription = customMessages?.get(httpCode) ?: when (httpCode) {
@@ -24,9 +27,9 @@ fun formatErrorMessage(
         else -> "Unknown error"
     }
 
-    return if (errorMessage.isNullOrBlank()) {
-        "$httpCode: $errorDescription"
+    return if (errorMessage.isNotEmpty()) {
+        errorDescription
     } else {
-        "$httpCode: $errorDescription - $errorMessage"
+        errorMessage
     }
 }
