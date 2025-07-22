@@ -3,6 +3,7 @@ package com.ontrek.shared.api.friends
 import android.util.Log
 import com.ontrek.shared.api.RetrofitClient
 import com.ontrek.shared.data.FriendRequest
+import com.ontrek.shared.utils.formatErrorMessage
 
 fun getFriendRequests(token: String, onSuccess: (List<FriendRequest>?) -> Unit, onError: (String) -> Unit) {
     RetrofitClient.api.getFriendRequests(token).enqueue(object : retrofit2.Callback<List<FriendRequest>> {
@@ -11,12 +12,22 @@ fun getFriendRequests(token: String, onSuccess: (List<FriendRequest>?) -> Unit, 
                 onSuccess(response.body())
             } else {
                 Log.e("API Friends", "Error: ${response.code()} - ${response.message()}")
-                onError("API Friends: ${response.code()}")
+                onError(
+                    formatErrorMessage(
+                        response.code(),
+                        response.message()
+                    )
+                )
             }
         }
 
         override fun onFailure(call: retrofit2.Call<List<FriendRequest>>, t: Throwable) {
-            onError("API Friends: ${t.message ?: "Unknown error"}")
+            onError(
+                formatErrorMessage(
+                    500,
+                    t.message ?: "Unknown error"
+                )
+            )
         }
     })
 }
@@ -27,13 +38,24 @@ fun getSentFriendRequest( token: String, onSuccess: (List<FriendRequest>?) -> Un
             if (response.isSuccessful) {
                 onSuccess(response.body())
             } else {
-                onError("API Friends: ${response.code()}")
+                Log.e("API Friends", "Error: ${response.code()} - ${response.message()}")
+                onError(
+                    formatErrorMessage(
+                        response.code(),
+                        response.message()
+                    )
+                )
             }
         }
 
         override fun onFailure(call: retrofit2.Call<List<FriendRequest>>, t: Throwable) {
             Log.e("API Friends", "Error: ${t.message ?: "Unknown error"}")
-            onError("API Friends: ${t.message ?: "Unknown error"}")
+            onError(
+                formatErrorMessage(
+                    500,
+                    t.message ?: "Unknown error"
+                )
+            )
         }
     })
 }
@@ -46,13 +68,25 @@ fun acceptFriendRequest(token: String, id: String, onSuccess: (String) -> Unit, 
                 val message = response.body()?.message ?: "Request accepted"
                 onSuccess(message)
             } else {
-                onError("API Friends: ${response.code()}")
+                Log.e("API Friends", "Error: ${response.code()} - ${response.message()}")
+                onError(
+                    formatErrorMessage(
+                        response.code(),
+                        response.message(),
+                        mapOf(409 to "Request already accepted")
+                    )
+                )
             }
         }
 
         override fun onFailure(call: retrofit2.Call<com.ontrek.shared.data.MessageResponse>, t: Throwable) {
             Log.e("API Friends", "Error: ${t.message ?: "Unknown error"}")
-            onError("API Friends: ${t.message ?: "Unknown error"}")
+            onError(
+                formatErrorMessage(
+                    500,
+                    t.message ?: "Unknown error"
+                )
+            )
         }
     })
 }
@@ -65,13 +99,23 @@ fun sendFriendRequest(token: String, id: String, onSuccess: (String) -> Unit, on
                 onSuccess(message)
             } else {
                 Log.e("API Friends", "Error: ${response.code()} - ${response.message()}")
-                onError("API Friends: ${response.code()}")
+                onError(
+                    formatErrorMessage(
+                        response.code(),
+                        response.message()
+                    )
+                )
             }
         }
 
         override fun onFailure(call: retrofit2.Call<com.ontrek.shared.data.MessageResponse>, t: Throwable) {
             Log.e("API Friends", "Error: ${t.message ?: "Unknown error"}")
-            onError("API Friends: ${t.message ?: "Unknown error"}")
+            onError(
+                formatErrorMessage(
+                    500,
+                    t.message ?: "Unknown error"
+                )
+            )
         }
     })
 }
@@ -85,13 +129,23 @@ fun deleteFriendRequest(token: String, id: String, onSuccess: (String) -> Unit, 
                 onSuccess(message)
             } else {
                 Log.e("API Friends", "Error: ${response.code()} - ${response.message()}")
-                onError("API Friends: ${response.code()}")
+                onError(
+                    formatErrorMessage(
+                        response.code(),
+                        response.message()
+                    )
+                )
             }
         }
 
         override fun onFailure(call: retrofit2.Call<com.ontrek.shared.data.MessageResponse>, t: Throwable) {
             Log.e("API Friends", "Error: ${t.message ?: "Unknown error"}")
-            onError("API Friends: ${t.message ?: "Unknown error"}")
+            onError(
+                formatErrorMessage(
+                    500,
+                    t.message ?: "Unknown error"
+                )
+            )
         }
     })
 }
